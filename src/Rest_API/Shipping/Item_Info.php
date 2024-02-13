@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package PostNLWooCommerce\Rest_API\Shipping
  */
 class Item_Info extends Base_Info {
+
 	/**
 	 * API args.
 	 *

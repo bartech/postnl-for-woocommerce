@@ -7,6 +7,7 @@
 
 
 			this.display_api_key_field();
+            this.display_printer_type_resolution_field();
 			environment_mode
 				.on( 'change', this.display_api_key_field );
 		},
@@ -23,6 +24,23 @@
 			}
 
 		},
+
+        display_printer_type_resolution_field: function () {
+            var select = jQuery( '#woocommerce_postnl_printer_type' );
+            var parent = this;
+            this.checkValue( select )
+            select.on('change', function() {
+                parent.checkValue( select );
+            });
+        },
+
+        checkValue: function ( select ) {
+            if ( select[0].value == 'PDF' ) {
+                jQuery('#woocommerce_postnl_printer_type_resolution').closest('tr').hide();
+            } else {
+                jQuery('#woocommerce_postnl_printer_type_resolution').closest('tr').show();
+            }
+        }
 	};
 
 	postnl_settings.init();

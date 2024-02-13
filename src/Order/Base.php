@@ -16,6 +16,7 @@ use PostNLWooCommerce\Shipping_Method\Settings;
 use PostNLWooCommerce\Helper\Mapping;
 use PostNLWooCommerce\Library\CustomizedPDFMerger;
 use PostNLWooCommerce\Product;
+use \Imagick;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -782,6 +783,32 @@ abstract class Base {
 	}
 
 	/**
+	 * Merge given files into the single one.
+	 *
+	 * @param array $label_paths Array of files to be merged.
+	 * @param string $merge_filename The final/merged filename with extension.
+	 * @param string $start_position Start position for the pdf file only.
+	 *
+	 * @return array|\PostNLWooCommerce\Order\Array|void
+	 */
+	protected function merge_labels( $label_paths, $merge_filename, $start_position = 'top-left' ) {
+		$extension = pathinfo( $label_paths[0], PATHINFO_EXTENSION );
+		switch ( $extension ) {
+			case 'pdf':
+				return $this->merge_pdf_labels( $label_paths, $merge_filename, $start_position );
+			case 'jpg':
+			case 'gif':
+				try {
+					return $this->merge_graphic_labels( $label_paths, $merge_filename );
+				} catch ( \Exception $e ) {
+					wc_add_notice( $e->getMessage(), 'error' );
+				}
+			case 'zpl_rle':
+				return $this->merge_text_files( $label_paths, $merge_filename );
+		}
+	}
+
+	/**
 	 * Merge PDF Labels.
 	 *
 	 * @param Array  $label_paths List of label path.
@@ -789,7 +816,7 @@ abstract class Base {
 	 *
 	 * @return Array List of filepath that has been merged.
 	 */
-	protected function merge_labels( $label_paths, $merge_filename, $start_position = 'top-left' ) {
+	protected function merge_pdf_labels( $label_paths, $merge_filename, $start_position = 'top-left' ) {
 		$pdf          = new CustomizedPDFMerger();
 		$merged_paths = array();
 
@@ -805,6 +832,75 @@ abstract class Base {
 		}
 
 		$pdf->merge( 'file', $filepath, 'A', $start_position );
+
+		return array(
+			'merged_filepaths' => $merged_paths,
+			'filepath'         => $filepath,
+		);
+	}
+
+	/**
+	 * Merge graphic labels.
+	 *
+	 * @param Array  $label_paths List of label path.
+	 * @param String $merge_filename Name of the file after the merge process.
+	 *
+	 * @return array
+	 * @throws \ImagickException
+	 */
+	protected function merge_graphic_labels( $label_paths, $merge_filename ) {
+
+		if ( empty( $label_paths ) ) {
+			throw new Exception( __('There are no files to merge.', 'postnl-for-woocommerce') );
+		}
+
+		if ( ! class_exists( 'Imagick' ) ) {
+			throw new Exception( __( '"Imagick" must be installed on the server to merge png files.', 'postnl-for-woocommerce' ) );
+		}
+		$merged_paths     = array();
+		$final_label_path = trailingslashit( POSTNL_UPLOADS_DIR ) . $merge_filename;
+		$final_label      = new \Imagick();
+		foreach ( $label_paths as $path ) {
+			$final_label->addImage( new \Imagick( $path ) );
+			$merged_paths[] = $path;
+		}
+
+		/* Append the images into one */
+		$final_label->resetIterator();
+		$combined = $final_label->appendImages( true );
+		$combined->setImageFormat( pathinfo( $final_label_path, PATHINFO_EXTENSION ) );
+		$combined->writeimage( $final_label_path );
+
+		return array(
+			'merged_filepaths' => $merged_paths,
+			'filepath'         => $final_label_path,
+		);
+
+	}
+
+	/**
+	 * Merge text files, for the ZEBRA printer.
+	 *
+	 * @param Array  $label_paths List of label path.
+	 * @param String $merge_filename Name of the file after the merge process.
+	 *
+	 * @return array
+	 */
+	protected function merge_text_files( $label_paths, $merge_filename ) {
+		$merged_paths = array();
+		$filepath     = trailingslashit( POSTNL_UPLOADS_DIR ) . $merge_filename;
+
+		$output = fopen( $filepath, "w" );
+		foreach ( $label_paths as $path ) {
+			$input = fopen( $path, "r" );
+			while ( $line = fgets( $input ) ){
+				print $path;
+				fwrite( $output, $line );
+			}
+			fclose( $input );
+			$merged_paths[] = $path;
+		}
+		fclose( $output );
 
 		return array(
 			'merged_filepaths' => $merged_paths,
@@ -1139,7 +1235,7 @@ abstract class Base {
 	 *
 	 * @param  \WC_Order  $order  current order object.
 	 *
-	 * @return boolean
+	 * @return booleanCancel
 	 */
 	public function have_label_file( $order ) {
 		$order_data = $order->get_meta( $this->meta_name );

@@ -15,7 +15,6 @@ use PostNLWooCommerce\Rest_API\Letterbox;
 use PostNLWooCommerce\Shipping_Method\Settings;
 use PostNLWooCommerce\Helper\Mapping;
 use PostNLWooCommerce\Library\CustomizedPDFMerger;
-use PostNLWooCommerce\Product;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -92,17 +91,20 @@ abstract class Base {
 
 	/**
 	 * List of meta box fields.
-	 *
-	 * @param \WC_Order $order WooCommerce order ID.
 	 */
-	public function meta_box_fields( $order = false ) {
-
+	public function meta_box_fields() {
+		// Get the default shipping options.
 		$default_options = $this->settings->get_default_shipping_options();
-		$default_options['letterbox'] = is_a( $order, 'WC_Order' ) && Utils::is_eligible_auto_letterbox( $order );
 
 		return apply_filters(
 			'postnl_order_meta_box_fields',
 			array(
+				array(
+					'id'            => $this->prefix . 'break_1',
+					'standard_feat' => false,
+					'const_field'   => true,
+					'type'          => 'break',
+				),
 				array(
 					'id'            => $this->prefix . 'id_check',
 					'type'          => 'checkbox',
@@ -110,7 +112,7 @@ abstract class Base {
 					'placeholder'   => '',
 					'description'   => '',
 					'value'         => $default_options['id_check'] ? 'yes' : '',
-					'show_in_bulk'  => false,
+					'show_in_bulk'  => true,
 					'standard_feat' => false,
 					'const_field'   => false,
 					'container'     => true,
@@ -413,16 +415,20 @@ abstract class Base {
 		$nonce_fields = array_values( $this->get_nonce_fields() );
 
 		// Loop through inputs within id 'shipment-postnl-label-form'.
-		foreach ( $this->meta_box_fields( $order_id ) as $field ) {
-			// Don't save nonce field.
-			if ( $nonce_fields[0]['id'] === $field['id'] ) {
-				continue;
-			}
-
+		foreach ( $this->meta_box_fields() as $field ) {
 			$post_value = ! empty( $meta_values[ $field['id'] ] ) ? sanitize_text_field( wp_unslash( $meta_values[ $field['id'] ] ) ) : '';
 			$post_field = Utils::remove_prefix_field( $this->prefix, $field['id'] );
-
-			$saved_data['backend'][ $post_field ] = $post_value;
+		
+			// Check if a value is posted, if so, use it.
+			if ( isset( $meta_values[ $field['id'] ] ) ) {
+				$saved_data['backend'][ $post_field ] = $post_value;
+			} else {
+				// Apply default settings only if the value is not set in the posted data.
+				$default_options = $this->settings->get_default_shipping_options();
+				if ( array_key_exists( $post_field, $default_options ) ) {
+					$saved_data['backend'][ $post_field ] = $default_options[ $post_field ];
+				}
+			}
 		}
 
 		$label_post_data = array(
@@ -1136,19 +1142,5 @@ abstract class Base {
 		$order_data = $order->get_meta( $this->meta_name );
 
 		return ! empty( $order_data['labels']['label']['filepath'] );
-	}
-
-	/**
-	 * Save default shipping options to the order.
-	 *
-	 * @param int $order_id \WC_Order id.
-	 * @param array $options New shipping options.
-	 *
-	 * @return void
-	 */
-	public function set_order_default_shipping_options( $order_id, $options ) {
-		$order = wc_get_order( $order_id );
-		$order->update_meta_data( $this->meta_name, $options );
-		$order->save();
 	}
 }

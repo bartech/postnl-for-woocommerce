@@ -4,7 +4,7 @@ Tags: woocommerce, export, delivery, packages, PostNL, Shipping
 Requires at least: 4.6
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 5.3.2
+Stable tag: 5.3.3
 WC requires at least: 4.0
 WC tested up to: 8.4
 License: GPLv2 or later
@@ -79,6 +79,13 @@ Follow these instructions (https://www.postnl.nl/Images/aanvragen-api-key-stappe
 5. PostNL information on the order details page
 
 == Changelog ==
+
+= 5.3.4 (2024-01-30) =
+* Added: Logic to apply default shipping options when not explicitly set in post data.
+
+= 5.3.3 (2024-01-30) =
+* Updated: Function to check insurance amount limits for EU and non-EU shipments.
+* Updated: Currency utility to include all WooCommerce currencies.
 
 = 5.3.2 (2023-12-20) =
 * Fix: Bulk action does not work in HPOS.

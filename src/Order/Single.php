@@ -683,7 +683,7 @@ class Single extends Base {
 			}
 
 			$to           = $order->get_billing_email();
-			$subject      = apply_filters( 'postnl_smart_return_email_subject', esc_html__( 'Subject', 'postnl-for-woocommerce' ) );
+			$subject      = apply_filters( 'postnl_smart_return_email_subject', esc_html__( 'PostNL Smart Returns', 'postnl-for-woocommerce' ) );
 			$message      = apply_filters( 'postnl_smart_return_email_message', esc_html__( 'In this email you will find the barcode you need to return your order. Scan this barcode at a PostNL point to print your return label. Please note, wait at least 10 minutes before scanning the barcode after receipt of this mail.', 'postnl-for-woocommerce' ) );
 			$attachements = '';
 

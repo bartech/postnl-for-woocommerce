@@ -818,6 +818,7 @@ abstract class Base {
 		$item_info = new Shipping\Item_Info( $post_data );
 		$shipping  = new Shipping\Client( $item_info );
 		$response  = $shipping->send_request();
+		error_log( print_r( $response, true ) );
 
 		// Check any errors.
 		$this->check_label_and_barcode( $response );

@@ -45,6 +45,9 @@ class Single extends Base {
 
 		add_action( 'wp_ajax_postnl_activate_return_function', array( $this, 'postnl_activate_return_function' ) );
 		add_action( 'wp_ajax_nopriv_postnl_activate_return_function', array( $this, 'postnl_activate_return_function' ) );
+
+		add_action( 'wp_ajax_postnl_send_smart_return_email', array( $this, 'postnl_send_smart_return_email' ) );
+		add_action( 'wp_ajax_nopriv_postnl_send_smart_return_email', array( $this, 'postnl_send_smart_return_email' ) );
 	}
 
 	/**
@@ -398,6 +401,22 @@ class Single extends Base {
 	}
 
 	/**
+	 * Adds an 'Send Smart Return' button.
+	 */
+	public function send_smart_return_email_html( $order ) {
+		if ( 'NL' === $order->get_shipping_country() ) {
+			$check_for_barcode = empty( $this->get_backend_data( $order->get_ID() ) );
+			?>
+			<hr id="postnl_break_2">
+			<p class="form-field">
+				<?php wp_nonce_field( 'postnl_send_smart_return_email', 'send_smart_return_email_nonce' ); ?>
+				<button type="button" class="button button-send-smart-return"  <?php disabled( $check_for_barcode ); ?>><?php esc_html_e( 'Send email with Smart Return', 'postnl-for-woocommerce' ); ?></button>
+			</p>
+			<?php
+		}
+	}
+
+	/**
 	 * Additional fields of the meta box for child class.
 	 *
 	 * @param WP_Post|WC_Order $post_or_order_object current order object.
@@ -433,7 +452,6 @@ class Single extends Base {
 				<a href="<?php echo esc_url( $this->get_download_label_url( $order->get_id() ) ); ?>" class="button button-primary button-download-label"><?php esc_html_e( 'Print Label', 'postnl-for-woocommerce' ); ?></a>
 				<a class="button button-secondary delete-label" href="#"><?php esc_html_e( 'Delete Label', 'postnl-for-woocommerce' ); ?></a>
 			</div>
-			<?php $this->activate_return_function_html( $order ) ?>
 			<!--
 			<div class="button-container return-container">
 				<a href="<?php echo esc_url( $this->get_download_label_url( $order->get_id(), 'return-label' ) ); ?>" class="button button-primary button-download-label"><?php esc_html_e( 'Print Return Label', 'postnl-for-woocommerce' ); ?></a>
@@ -444,6 +462,8 @@ class Single extends Base {
 				<a href="<?php echo esc_url( $this->get_download_label_url( $order->get_id(), 'buspakjeextra' ) ); ?>" class="button button-primary button-download-label"><?php esc_html_e( 'Print Letterbox', 'postnl-for-woocommerce' ); ?></a>
 			</div>
 			-->
+			<?php $this->activate_return_function_html( $order ); ?>
+			<?php $this->send_smart_return_email_html( $order ); ?>
 			<div id="shipment-postnl-error-text"></div>
 		</div>
 		<?php
@@ -630,6 +650,49 @@ class Single extends Base {
 				wp_send_json_success();
 			} else {
 				wp_send_json_error();
+			}
+		} catch ( \Exception $e ) {
+			wp_send_json_error(
+				array( 'message' => $e->getMessage() ),
+			);
+		}
+	}
+
+	/**
+	 * Ajax action to send smart return email.
+	 *
+	 * @return void
+	 */
+	public function postnl_send_smart_return_email() {
+		try {
+			if ( ! isset( $_POST['security'] ) ) {
+				throw new \Exception( esc_html__( 'Cannot find nonce field!', 'postnl-for-woocommerce' ) );
+			}
+
+			// Check nonce before proceed.
+			if ( ! wp_verify_nonce( $_POST['security'], 'postnl_send_smart_return_email' ) ) {
+				throw new \Exception( esc_html__( 'Nonce is invalid', 'postnl-for-woocommerce' ) );
+			}
+
+			$order_id = ! empty( $_REQUEST['order_id'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['order_id'] ) ) : 0;
+
+			// Check if order id is really an ID from shop_order post type.
+			$order = wc_get_order( $order_id );
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				throw new \Exception( esc_html__( 'Order does not exist!', 'postnl-for-woocommerce' ) );
+			}
+
+			$to           = $order->get_billing_email();
+			$subject      = apply_filters( 'postnl_smart_return_email_subject', esc_html__( 'Subject', 'postnl-for-woocommerce' ) );
+			$message      = apply_filters( 'postnl_smart_return_email_message', esc_html__( 'In this email you will find the barcode you need to return your order. Scan this barcode at a PostNL point to print your return label. Please note, wait at least 10 minutes before scanning the barcode after receipt of this mail.', 'postnl-for-woocommerce' ) );
+			$attachements = '';
+
+			$is_successful = wp_mail( $to, $subject, $message, '', $attachements );
+
+			if ( $is_successful ) {
+				wp_send_json_success( $order_id );
+			} else {
+				throw new \Exception( esc_html__( 'Email could not be send', 'postnl-for-woocommerce' ) );
 			}
 		} catch ( \Exception $e ) {
 			wp_send_json_error(

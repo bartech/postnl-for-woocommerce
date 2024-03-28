@@ -789,46 +789,6 @@ class Item_Info extends Base_Info {
 	}
 
 	/**
-	 * Calculate total weight in one order.
-	 *
-	 * @param WC_Order $order Order object.
-	 *
-	 * @return Float Total weight.
-	 */
-	protected function calculate_order_weight( $order ) {
-		$total_weight = 0;
-
-		if ( ! is_a( $order, 'WC_Order' ) ) {
-			return apply_filters( 'postnl_order_weight', $total_weight, $order );
-		}
-
-		$ordered_items = $order->get_items();
-
-		if ( empty( $ordered_items ) || ! is_array( $ordered_items ) ) {
-			return apply_filters( 'postnl_order_weight', $total_weight, $order );
-		}
-
-		foreach ( $ordered_items as $key => $item ) {
-			$product = $item->get_product();
-
-			if ( ! is_a( $product, 'WC_Product' ) || $product->is_virtual() ) {
-				continue;
-			}
-
-			$product_weight = $product->get_weight();
-			$quantity       = $item->get_quantity();
-
-			if ( $product_weight ) {
-				$total_weight += ( $quantity * $product_weight );
-			}
-		}
-
-		$total_weight = Utils::maybe_convert_weight( $total_weight );
-
-		return apply_filters( 'postnl_order_weight', $total_weight, $order );
-	}
-
-	/**
 	 * Get selected shipping features.
 	 *
 	 * @return String

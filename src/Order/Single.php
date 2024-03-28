@@ -404,15 +404,13 @@ class Single extends Base {
 	 * Adds an 'Send Smart Return' button.
 	 */
 	public function send_smart_return_email_html( $order ) {
-        $item_info = new \PostNLWooCommerce\Rest_API\Smart_Returns\Item_Info( $order );
-        var_dump($item_info);
 		if ( 'NL' === $order->get_shipping_country() ) {
 			$check_for_barcode = empty( $this->get_backend_data( $order->get_ID() ) );
 			?>
-            <hr id="postnl_break_2">
-            <p class="form-field">
+			<hr id="postnl_break_2">
+			<p class="form-field">
 				<?php wp_nonce_field( 'postnl_send_smart_return_email', 'send_smart_return_email_nonce' ); ?>
-                <button type="button" class="button button-send-smart-return"  <?php disabled( $check_for_barcode ); ?>><?php esc_html_e( 'Send email with Smart Return', 'postnl-for-woocommerce' ); ?></button>
+				<button type="button" class="button button-send-smart-return"  <?php disabled( $check_for_barcode ); ?>><?php esc_html_e( 'Send email with Smart Return', 'postnl-for-woocommerce' ); ?></button>
 			</p>
 			<?php
 		}

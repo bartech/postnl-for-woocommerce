@@ -797,6 +797,7 @@ abstract class Base {
 			case 'pdf':
 				return $this->merge_pdf_labels( $label_paths, $merge_filename, $start_position );
 			case 'jpg':
+				return $this->merge_jpg_files( $label_paths, $merge_filename, 'horizontal' );
 			case 'gif':
 				try {
 					return $this->merge_graphic_labels( $label_paths, $merge_filename );
@@ -835,6 +836,64 @@ abstract class Base {
 
 		return array(
 			'merged_filepaths' => $merged_paths,
+			'filepath'         => $filepath,
+		);
+	}
+
+	/**
+	 * Merge JPG Labels.
+	 *
+	 * @param Array  $label_paths List of label path.
+	 * @param String $merge_filename Name of the file after the merge process.
+	 *
+	 * @return Array List of filepath that has been merged.
+	 */
+	protected function merge_jpg_files($image_paths, $merge_filename, $direction = 'vertical') {
+		$images = [];
+		$width = 0;
+		$height = 0;
+	
+		// Load images and calculate dimensions
+		foreach ($image_paths as $path) {
+			$img = imagecreatefromjpeg($path);
+			$images[] = $img;
+			$width = max($width, imagesx($img));
+			$height += imagesy($img);
+		}
+	
+		// Create a blank canvas for the merged image
+		if ($direction == 'horizontal') {
+			$canvas = imagecreatetruecolor($width * count($images), $height);
+		} else {
+			$canvas = imagecreatetruecolor($width, $height);
+		}
+	
+		// Set white background
+		$white = imagecolorallocate($canvas, 255, 255, 255);
+		imagefill($canvas, 0, 0, $white);
+	
+		// Copy each image onto the canvas
+		$offset = 0;
+		foreach ($images as $img) {
+			if ($direction == 'horizontal') {
+				imagecopy($canvas, $img, $offset, 0, 0, 0, imagesx($img), imagesy($img));
+				$offset += imagesx($img);
+			} else {
+				imagecopy($canvas, $img, 0, $offset, 0, 0, imagesx($img), imagesy($img));
+				$offset += imagesy($img);
+			}
+			imagedestroy($img);
+		}
+	
+		// Set the output file path
+		$filepath = trailingslashit(POSTNL_UPLOADS_DIR) . $merge_filename;
+	
+		// Save the merged image
+		imagejpeg($canvas, $filepath);
+		imagedestroy($canvas);
+	
+		return array(
+			'merged_filepaths' => $image_paths,
 			'filepath'         => $filepath,
 		);
 	}

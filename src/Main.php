@@ -97,8 +97,24 @@ class Main {
 		add_action( 'init', array( $this, 'load_plugin' ), 1 );
 		add_action( 'before_woocommerce_init', array( $this, 'declare_wc_hpos_compatibility' ), 10 );
 		add_action( 'before_woocommerce_init', array( $this, 'declare_product_editor_compatibility' ), 10 );
+		add_action( 'block_categories_all', array( $this, 'register_checkout_block_category' ), 10, 2 );
 	}
 
+	/**
+	 * Registers the slug as a block category with WordPress.
+	 */
+	public function register_checkout_block_category( $categories ) {
+		return array_merge(
+			$categories,
+			[
+				[
+					'slug'  => 'postnl-for-woocommerce',
+					'title' => __( 'Checkout Blocks', 'postnl-for-woocommerce' ),
+				],
+			]
+		);
+	}
+	
 	/**
 	 * Declare WooCommerce HPOS feature compatibility.
 	 */

@@ -109,16 +109,20 @@ class Postnl_Store_API_Extension {
 	 */
 	public static function data_callback() {
 
-		$data = ( Utils::is_eligible_auto_letterbox( WC()->cart ) ) ? array() : array();
+		$data = array();
 		error_log('test'. 'test');
 
 		$delivery_day = new Delivery_Day();
 		return array(
-			'postnl_tabs' => array(
-				'data'       	=> $data,
-				'fields'     	=> $delivery_day->get_fields(),
-				'is_enabled' 	=> $delivery_day->is_enabled(),
-				'static_var' 	=> self::prepare_settings_static_variable(),
+			'wc_postnl_tabs' => array(
+				// 'data'       	=> $data,
+				// 'fields'     	=> $delivery_day->get_fields(),
+				// 'is_enabled' 	=> $delivery_day->is_enabled(),
+				// 'static_var' 	=> self::prepare_settings_static_variable(),
+				'data'       	=> '',
+				'fields'     	=> '',
+				'is_enabled' 	=> '',
+				'static_var' 	=> '',
 			),
 		);
 	}
@@ -252,19 +256,19 @@ class Postnl_Store_API_Extension {
 		);
 		$modify_addr_link  = get_permalink( $id );
 		$add_addr_link     = add_query_arg( 'cart', 1, get_permalink( $id ) );
-		$has_multi_address = ( self::$wcms->cart->cart_has_multi_shipping() && WC()->cart->needs_shipping() );
-		$note_limit        = ! empty( self::$wcms->gateway_settings['checkout_notes_limit'] ) ? absint( self::$wcms->gateway_settings['checkout_notes_limit'] ) : '';
-		$show_notes        = ( ! empty( self::$wcms->gateway_settings['checkout_notes'] ) && 'yes' === self::$wcms->gateway_settings['checkout_notes'] ) ? true : false;
-		$show_datepicker   = ( ! empty( self::$wcms->gateway_settings['checkout_datepicker'] ) && 'yes' === self::$wcms->gateway_settings['checkout_datepicker'] ) ? true : false;
-		$valid_dates       = ( ! empty( self::$wcms->gateway_settings['checkout_valid_days'] ) ) ? self::$wcms->gateway_settings['checkout_valid_days'] : array();
-		$excluded_dates    = ( ! empty( self::$wcms->gateway_settings['checkout_exclude_dates'] ) ) ? self::$wcms->gateway_settings['checkout_exclude_dates'] : array();
+		// $has_multi_address = ( self::$wcms->cart->cart_has_multi_shipping() && WC()->cart->needs_shipping() );
+		// $note_limit        = ! empty( self::$wcms->gateway_settings['checkout_notes_limit'] ) ? absint( self::$wcms->gateway_settings['checkout_notes_limit'] ) : '';
+		// $show_notes        = ( ! empty( self::$wcms->gateway_settings['checkout_notes'] ) && 'yes' === self::$wcms->gateway_settings['checkout_notes'] ) ? true : false;
+		// $show_datepicker   = ( ! empty( self::$wcms->gateway_settings['checkout_datepicker'] ) && 'yes' === self::$wcms->gateway_settings['checkout_datepicker'] ) ? true : false;
+		// $valid_dates       = ( ! empty( self::$wcms->gateway_settings['checkout_valid_days'] ) ) ? self::$wcms->gateway_settings['checkout_valid_days'] : array();
+		// $excluded_dates    = ( ! empty( self::$wcms->gateway_settings['checkout_exclude_dates'] ) ) ? self::$wcms->gateway_settings['checkout_exclude_dates'] : array();
 		$show_gifts        = \WC_MS_Gifts::is_enabled();
 		$lang_notification = \WC_Ship_Multiple::$lang['notification'];
 		$lang_button       = \WC_Ship_Multiple::$lang['btn_items'];
 
 		return array(
-			'is_eligible_wcms'  => self::$wcms->cart->cart_is_eligible_for_multi_shipping(),
-			'has_multi_address' => $has_multi_address,
+			// 'is_eligible_wcms'  => self::$wcms->cart->cart_is_eligible_for_multi_shipping(),
+			// 'has_multi_address' => $has_multi_address,
 			'reset_url'         => $reset_url,
 			'modify_addr_link'  => $modify_addr_link,
 			'add_addr_link'     => $add_addr_link,
@@ -272,16 +276,16 @@ class Postnl_Store_API_Extension {
 			'reset_addr_text'   => esc_html__( 'Reset Address', 'wc_shipping_multiple_address' ),
 			'lang_notification' => esc_html( $lang_notification ),
 			'lang_button'       => esc_attr( $lang_button ),
-			'show_notes'        => $show_notes,
+			// 'show_notes'        => $show_notes,
 			'note_label_text'   => esc_html( 'Note:', 'wc_shipping_multiple_address' ),
 			'show_gifts'        => $show_gifts,
 			'gifts_text'        => esc_html__( 'This is a gift', 'wc_shipping_multiple_address' ),
-			'show_datepicker'   => $show_datepicker,
+			// 'show_datepicker'   => $show_datepicker,
 			'date_label_text'   => esc_html( 'Shipping date:', 'wc_shipping_multiple_address' ),
-			'valid_dates'       => $valid_dates,
-			'excluded_dates'    => $excluded_dates,
+			// 'valid_dates'       => $valid_dates,
+			// 'excluded_dates'    => $excluded_dates,
 			'date_error_text'   => esc_html__( 'The item cannot be send on', 'wc_shipping_multiple_address' ),
-			'note_limit'        => $note_limit,
+			// 'note_limit'        => $note_limit,
 			'no_method_text'    => esc_html__( 'No shipping method', 'wc_shipping_multiple_address' ),
 		);
 	}

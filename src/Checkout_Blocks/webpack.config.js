@@ -1,3 +1,9 @@
+/**
+ * The Webpack configuration for WooCommerce Shipping Multiple Addresses.
+ *
+ * @package WC_Postnl_Tabs
+ */
+
 const path = require( 'path' );
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 const WooCommerceDependencyExtractionWebpackPlugin = require( '@woocommerce/dependency-extraction-webpack-plugin' );
@@ -19,13 +25,13 @@ module.exports = {
 			'postnl-tabs-block',
 			'index.js'
 		),
-		'postnl-tabs-block-frontend': path.resolve(
-			process.cwd(),
-			'src',
-			'js',
-			'postnl-tabs-block',
-			'frontend.js'
-		),
+		// 'postnl-tabs-block-frontend': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'js',
+		// 	'postnl-tabs-block',
+		// 	'frontend.js'
+		// ),
 	},
 	module: {
 		...defaultConfig.module,

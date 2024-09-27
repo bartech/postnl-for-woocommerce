@@ -23,7 +23,8 @@ class Postnl_Tabs_Blocks_Integration implements IntegrationInterface {
 	 * When called invokes any initialization/setup for the integration.
 	 */
 	public function initialize() {
-		require_once __DIR__ . '/postnl-tabs-extend-store-endpoint.php';
+		//require_once __DIR__ . '/postnl-tabs-extend-store-endpoint.php';
+		require_once __DIR__ . '/postnl-store-api-extension.php';
 		$this->register_shipping_workshop_block_frontend_scripts();
 		$this->register_shipping_workshop_block_editor_scripts();
 		$this->register_shipping_workshop_block_editor_styles();
@@ -64,7 +65,8 @@ class Postnl_Tabs_Blocks_Integration implements IntegrationInterface {
 	 * Extends the cart schema to include the shipping-workshop value.
 	 */
 	private function extend_store_api() {
-		Postnl_Tabs_Extend_Store_Endpoint::init();
+		Postnl_Store_API_Extension::init();
+		// Postnl_Tabs_Extend_Store_Endpoint::init();
 	}
 
     private function save_shipping_instructions() {
@@ -282,9 +284,9 @@ class Postnl_Tabs_Blocks_Integration implements IntegrationInterface {
 	}
 
 	public function register_shipping_workshop_block_frontend_scripts() {
-		$script_path       = '/build/postnl-tabs-block-frontend.js';
+		$script_path       = '/build/postnl-tabs-block.js';
 		$script_url        = plugins_url( $script_path, __FILE__ );
-		$script_asset_path = dirname( __FILE__ ) . '/build/postnl-tabs-block-frontend.asset.php';
+		$script_asset_path = dirname( __FILE__ ) . '/build/postnl-tabs-block.asset.php';
 		$script_asset      = file_exists( $script_asset_path )
 			? require $script_asset_path
 			: [

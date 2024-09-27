@@ -42,7 +42,7 @@ class Postnl_Tabs_Extend_Store_Endpoint {
 		 * 📝 Once the `extend_checkout_schema` method is complete (see [backend-step-01]) you can 
 		 * uncomment the code below.
 		 */
-        /*
+        
 		if ( is_callable( [ self::$extend, 'register_endpoint_data' ] ) ) {
 			self::$extend->register_endpoint_data(
 				[
@@ -53,7 +53,7 @@ class Postnl_Tabs_Extend_Store_Endpoint {
 				]
 			);
 		}
-        */
+        
 	}
 
 

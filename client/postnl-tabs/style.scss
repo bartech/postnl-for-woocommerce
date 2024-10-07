@@ -1,0 +1,14 @@
+.wcms-duplicate-cart {
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	width:100%;
+
+	&-button {
+		font-weight:700;
+		padding-left:30px;
+		padding-right:30px;
+		width:100%;
+	}
+}

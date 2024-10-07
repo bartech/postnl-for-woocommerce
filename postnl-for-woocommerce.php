@@ -28,7 +28,7 @@
 
 namespace PostNLWooCommerce;
 
-use PostNLWooCommerce\Checkout_Blocks\Postnl_Tabs_Blocks_Integration;
+use PostNLWooCommerce\Blocks\WC_Postnl_Tabs;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -53,13 +53,16 @@ function postnl() {
 	return Main::instance();
 }
 add_action( 'plugins_loaded', 'PostNLWooCommerce\postnl' );
-add_action('woocommerce_blocks_loaded', function() {
-	require_once __DIR__ . '/src/Checkout_Blocks/postnl-tabs-blocks-integration.php';
 
-	add_action(
-		'woocommerce_blocks_checkout_block_registration',
-		function( $integration_registry ) {
-			$integration_registry->register( new Postnl_Tabs_Blocks_Integration() );
-		}
-	);
-});
+
+/**
+ * Declare compatibility with WC Cart and Checkout blocks.
+ */
+function woocommerce_shipping_multiple_addresses_blocks_compatibility() {
+	if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', POSTNL_WC_PLUGIN_FILE, true );
+	}
+}
+
+
+$GLOBALS['wcpt'] = new WC_Postnl_Tabs();

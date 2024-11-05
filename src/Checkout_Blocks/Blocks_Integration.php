@@ -57,7 +57,7 @@ class Blocks_Integration implements IntegrationInterface {
 		);
 
 		// Register block styles
-		$this->register_styles();
+		// $this->register_styles();
 	}
 
 	/**
@@ -78,12 +78,12 @@ class Blocks_Integration implements IntegrationInterface {
 				'version'      => $this->get_file_version( $script_path ),
 			];
 
-		wp_enqueue_style(
-			'postnl-delivery-day-integration',
-			$style_url,
-			[],
-			$this->get_file_version( $style_path )
-		);
+		// wp_enqueue_style(
+		// 	'postnl-delivery-day-integration',
+		// 	$style_url,
+		// 	[],
+		// 	$this->get_file_version( $style_path )
+		// );
 
 		wp_register_script(
 			'postnl-delivery-day-integration',
@@ -100,20 +100,20 @@ class Blocks_Integration implements IntegrationInterface {
 		);
 	}
 
-	/**
-	 * Registers block styles for the block editor.
-	 */
-	private function register_styles() {
-		$block_style_path = '/build/style-postnl-delivery-day.css';
-		$block_style_url  = POSTNL_WC_PLUGIN_DIR_URL . $block_style_path;
+	// /**
+	//  * Registers block styles for the block editor.
+	//  */
+	// private function register_styles() {
+	// 	$block_style_path = '/build/style-postnl-delivery-day.css';
+	// 	$block_style_url  = POSTNL_WC_PLUGIN_DIR_URL . $block_style_path;
 
-		wp_enqueue_style(
-			'postnl-delivery-day',
-			$block_style_url,
-			[],
-			$this->get_file_version( $block_style_path )
-		);
-	}
+	// 	wp_enqueue_style(
+	// 		'postnl-delivery-day',
+	// 		$block_style_url,
+	// 		[],
+	// 		$this->get_file_version( $block_style_path )
+	// 	);
+	// }
 
 	/**
 	 * Helper method to register block editor scripts.
@@ -125,10 +125,10 @@ class Blocks_Integration implements IntegrationInterface {
 	private function register_block_script( $handle, $script_path, $asset_path ) {
 		$script_url = POSTNL_WC_PLUGIN_DIR_URL . $script_path;
 		$asset_file = POSTNL_WC_PLUGIN_DIR_PATH . $asset_path;
-		$asset      = file_exists( $asset_file ) ? require $asset_file : [
-			'dependencies' => [],
+		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
+			'dependencies' => array(),
 			'version'      => $this->get_file_version( $script_path ),
-		];
+		);
 
 		wp_register_script(
 			$handle,
@@ -155,10 +155,10 @@ class Blocks_Integration implements IntegrationInterface {
 	private function register_frontend_script( $handle, $script_path, $asset_path ) {
 		$script_url = POSTNL_WC_PLUGIN_DIR_URL . $script_path;
 		$asset_file = POSTNL_WC_PLUGIN_DIR_PATH . $asset_path;
-		$asset      = file_exists( $asset_file ) ? require $asset_file : [
+		$asset      = file_exists( $asset_file ) ? require $asset_file : array(
 			'dependencies' => [],
 			'version'      => $this->get_file_version( $script_path ),
-		];
+		);
 
 		wp_enqueue_script(
 			$handle,
@@ -179,10 +179,10 @@ class Blocks_Integration implements IntegrationInterface {
 	 * Registers AJAX actions.
 	 */
 	private function register_ajax_actions() {
-		add_action( 'wp_ajax_postnl_set_checkout_post_data', [ $this, 'handle_set_checkout_post_data' ] );
-		add_action( 'wp_ajax_nopriv_postnl_set_checkout_post_data', [ $this, 'handle_set_checkout_post_data' ] );
-		add_action( 'wp_ajax_postnl_get_delivery_options', [ $this, 'handle_get_delivery_options' ] );
-		add_action( 'wp_ajax_nopriv_postnl_get_delivery_options', [ $this, 'handle_get_delivery_options' ] );
+		add_action( 'wp_ajax_postnl_set_checkout_post_data', array( $this, 'handle_set_checkout_post_data' ) );
+		add_action( 'wp_ajax_nopriv_postnl_set_checkout_post_data', array( $this, 'handle_set_checkout_post_data' ) );
+		add_action( 'wp_ajax_postnl_get_delivery_options', array( $this, 'handle_get_delivery_options' ) );
+		add_action( 'wp_ajax_nopriv_postnl_get_delivery_options', array( $this, 'handle_get_delivery_options' ) );
 	}
 
 	/**
@@ -207,10 +207,10 @@ class Blocks_Integration implements IntegrationInterface {
 	 * @return string[]
 	 */
 	public function get_script_handles() {
-		return [
+		return array(
 			'postnl-delivery-day-integration',
 			'postnl-container-frontend',
-		];
+		);
 	}
 
 	/**
@@ -219,10 +219,10 @@ class Blocks_Integration implements IntegrationInterface {
 	 * @return string[]
 	 */
 	public function get_editor_script_handles() {
-		return [
+		return array(
 			'postnl-delivery-day-integration',
 			'postnl-container-editor',
-		];
+		);
 	}
 
 
@@ -233,12 +233,12 @@ class Blocks_Integration implements IntegrationInterface {
 	 */
 	public function get_script_data() {
 		$letterbox = Utils::is_eligible_auto_letterbox( WC()->cart );
-		return [
+		return array(
 			'pluginUrl' => POSTNL_WC_PLUGIN_DIR_URL,
 			'ajax_url'  => admin_url( 'admin-ajax.php' ),
 			'nonce'     => wp_create_nonce( 'postnl_delivery_day_nonce' ),
 			'letterbox' => $letterbox, // Add the letterbox status here
-		];
+		);
 	}
 
 	/**
@@ -247,13 +247,13 @@ class Blocks_Integration implements IntegrationInterface {
 	public function handle_set_checkout_post_data() {
 		// Verify nonce
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'postnl_delivery_day_nonce' ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce' ], 400 );
+			wp_send_json_error( array( 'message' => 'Invalid nonce' ), 400 );
 			wp_die();
 		}
 
 		// Check if data is provided
 		if ( ! isset( $_POST['data'] ) || ! is_array( $_POST['data'] ) ) {
-			wp_send_json_error( [ 'message' => 'No data provided.' ], 400 );
+			wp_send_json_error( array( 'message' => 'No data provided.' ), 400 );
 			wp_die();
 		}
 
@@ -269,10 +269,10 @@ class Blocks_Integration implements IntegrationInterface {
 			WC()->session->__unset( 'postnl_checkout_post_data' );
 
 			// Return empty response to notify frontend to clear options
-			wp_send_json_success( [
+			wp_send_json_success( array(
 				'message'          => 'No delivery options available.',
 				'delivery_options' => [],
-			], 200 );
+			), 200 );
 			wp_die();
 		}
 
@@ -285,10 +285,10 @@ class Blocks_Integration implements IntegrationInterface {
 				WC()->session->__unset( 'postnl_checkout_post_data' );
 
 				// Return empty response to notify frontend to clear options
-				wp_send_json_success( [
+				wp_send_json_success( array(
 					'message'          => 'No delivery options available due to missing postcode or house number.',
-					'delivery_options' => [],
-				], 200 );
+					'delivery_options' => array(),
+				), 200 );
 				wp_die();
 			}
 		}
@@ -303,16 +303,16 @@ class Blocks_Integration implements IntegrationInterface {
 
 		// Fetch updated delivery options
 		try {
-			$delivery_day               = new Delivery_Day();
+			$delivery_day     = new Delivery_Day();
 			$checkout_data    = $con->get_checkout_data( $sanitized_data );
 			$delivery_options = $delivery_day->get_content_data( $checkout_data['response'], $checkout_data['post_data'] );
 
-			wp_send_json_success( [
+			wp_send_json_success( array(
 				'message'          => 'Data saved successfully.',
-				'delivery_options' => isset( $delivery_options['delivery_options'] ) ? $delivery_options['delivery_options'] : [],
-			], 200 );
+				'delivery_options' => isset( $delivery_options['delivery_options'] ) ? $delivery_options['delivery_options'] : array(),
+			), 200 );
 		} catch ( \Exception $e ) {
-			wp_send_json_error( [ 'message' => 'Failed to fetch delivery options.' ], 500 );
+			wp_send_json_error( array( 'message' => 'Failed to fetch delivery options.' ), 500 );
 		}
 
 		wp_die();
@@ -324,7 +324,7 @@ class Blocks_Integration implements IntegrationInterface {
 	public function handle_get_delivery_options() {
 		// Verify nonce
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'postnl_delivery_day_nonce' ) ) {
-			wp_send_json_error( [ 'message' => 'Invalid nonce' ], 400 );
+			wp_send_json_error( array( 'message' => 'Invalid nonce' ), 400 );
 			wp_die();
 		}
 
@@ -342,10 +342,10 @@ class Blocks_Integration implements IntegrationInterface {
 
 			// Return empty response to notify frontend to clear options
 			wp_send_json_success(
-				[
-					'delivery_options' => [],
-					'dropoff_options'  => [],
-				], 200 );
+				array(
+					'delivery_options' => array(),
+					'dropoff_options'  => array(),
+			), 200 );
 			wp_die();
 		}
 		if ( $settings->is_validate_nl_address_enabled() ) {
@@ -358,10 +358,10 @@ class Blocks_Integration implements IntegrationInterface {
 
 				// Return empty response to notify frontend to clear options
 				wp_send_json_success(
-					[
-						'delivery_options' => [],
-						'dropoff_options'  => [],
-					], 200 );
+					array(
+						'delivery_options' => array(),
+						'dropoff_options'  => array(),
+					), 200 );
 				wp_die();
 
 			}
@@ -370,22 +370,22 @@ class Blocks_Integration implements IntegrationInterface {
 
 
 		try {
-			$container              = new Container();
-			$delivery_day               = new Delivery_Day();
+			$container        = new Container();
+			$delivery_day     = new Delivery_Day();
 			$dropoff          = new Dropoff_Points();
 			$checkout_data    = $container->get_checkout_data( $order_data );
 			$delivery_options = $delivery_day->get_content_data( $checkout_data['response'], $checkout_data['post_data'] );
 			$dropoff_options  = $dropoff->get_content_data( $checkout_data['response'], $checkout_data['post_data'] );
 
 			wp_send_json_success(
-				[
-					'delivery_options' => isset( $delivery_options['delivery_options'] ) ? $delivery_options['delivery_options'] : [],
-					'dropoff_options'  => isset( $dropoff_options['dropoff_options'] ) ? $dropoff_options['dropoff_options'] : [],
-				], 200 );
+				array(
+					'delivery_options' => isset( $delivery_options['delivery_options'] ) ? $delivery_options['delivery_options'] : array(),
+					'dropoff_options'  => isset( $dropoff_options['dropoff_options'] ) ? $dropoff_options['dropoff_options'] : array(),
+				), 200 );
 		} catch ( \Exception $e ) {
 			$this->log_response( 'Failed to fetch delivery options: ' . $e->getMessage() );
 
-			wp_send_json_error( [ 'message' => 'Failed to fetch delivery options.' ], 500 );
+			wp_send_json_error( array( 'message' => 'Failed to fetch delivery options.' ), 500 );
 		}
 
 		wp_die();

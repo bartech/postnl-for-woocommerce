@@ -13,70 +13,70 @@ module.exports = {
 	entry: {
 		index: path.resolve(process.cwd(), 'src', 'Checkout_Blocks', 'js', 'index.js'),
 		// Existing blocks
-		'postnl-delivery-day': path.resolve(
+		'postnl-container': path.resolve(
 			process.cwd(),
 			'src',
 			'Checkout_Blocks',
 			'js',
-			'postnl-delivery-day',
+			'postnl-container',
 			'index.js'
 		),
-		'postnl-delivery-day-frontend': path.resolve(
+		'postnl-container-frontend': path.resolve(
 			process.cwd(),
 			'src',
 			'Checkout_Blocks',
 			'js',
-			'postnl-delivery-day',
+			'postnl-container',
 			'frontend.js'
 		),
-		'postnl-dropoff-points': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-dropoff-points',
-			'index.js'
-		),
-		'postnl-dropoff-points-frontend': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-dropoff-points',
-			'frontend.js'
-		),
-		'postnl-billing-address': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-billing-address',
-			'index.js'
-		),
-		'postnl-billing-address-frontend': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-billing-address',
-			'frontend.js'
-		),
-		'postnl-shipping-address': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-shipping-address',
-			'index.js'
-		),
-		'postnl-shipping-address-frontend': path.resolve(
-			process.cwd(),
-			'src',
-			'Checkout_Blocks',
-			'js',
-			'postnl-shipping-address',
-			'frontend.js'
-		),
+		// 'postnl-dropoff-points': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-dropoff-points',
+		// 	'index.js'
+		// ),
+		// 'postnl-dropoff-points-frontend': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-dropoff-points',
+		// 	'frontend.js'
+		// ),
+		// 'postnl-billing-address': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-billing-address',
+		// 	'index.js'
+		// ),
+		// 'postnl-billing-address-frontend': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-billing-address',
+		// 	'frontend.js'
+		// ),
+		// 'postnl-shipping-address': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-shipping-address',
+		// 	'index.js'
+		// ),
+		// 'postnl-shipping-address-frontend': path.resolve(
+		// 	process.cwd(),
+		// 	'src',
+		// 	'Checkout_Blocks',
+		// 	'js',
+		// 	'postnl-shipping-address',
+		// 	'frontend.js'
+		// ),
 	},
 	module: {
 		...defaultConfig.module,

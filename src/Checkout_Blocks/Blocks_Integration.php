@@ -345,7 +345,7 @@ class Blocks_Integration implements IntegrationInterface {
 				array(
 					'delivery_options' => array(),
 					'dropoff_options'  => array(),
-			), 200 );
+				), 200 );
 			wp_die();
 		}
 		if ( $settings->is_validate_nl_address_enabled() ) {

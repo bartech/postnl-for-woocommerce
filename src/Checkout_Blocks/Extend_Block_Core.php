@@ -21,16 +21,16 @@ class Extend_Block_Core {
 	public function __construct() {
 
 		// Initialize hooks
-		add_action( 'woocommerce_store_api_checkout_update_order_from_request', [
+		add_action( 'woocommerce_store_api_checkout_update_order_from_request', array(
 			$this,
 			'save_postnl_checkout_fields'
-		], 10, 2 );
+		), 10, 2 );
 
 		// Register the update callback when WooCommerce Blocks is loaded
-		add_action( 'init', [ $this, 'register_store_api_callback' ] );
+		add_action( 'init', array( $this, 'register_store_api_callback' ) );
 
 		// Register fee calculation
-		add_action( 'woocommerce_cart_calculate_fees', [ $this, 'postnl_add_custom_fee' ] );
+		add_action( 'woocommerce_cart_calculate_fees', array( $this, 'postnl_add_custom_fee' ) );
 		$this->register_additional_checkout_fields();
 
 	}
@@ -65,7 +65,7 @@ class Extend_Block_Core {
 			woocommerce_store_api_register_update_callback(
 				array(
 					'namespace' => $this->name,
-					'callback'  => [ $this, 'postnl_store_api_callback' ],
+					'callback'  => array( $this, 'postnl_store_api_callback' ),
 				)
 			);
 		}

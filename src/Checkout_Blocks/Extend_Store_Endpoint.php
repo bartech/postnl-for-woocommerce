@@ -54,7 +54,7 @@ class Extend_Store_Endpoint {
 				[
 					'endpoint'        => CheckoutSchema::IDENTIFIER,
 					'namespace'       => self::IDENTIFIER,
-					'schema_callback' => [ __CLASS__, 'extend_checkout_schema' ],
+					'schema_callback' => array( __CLASS__, 'extend_checkout_schema' ),
 					'schema_type'     => ARRAY_A,
 				]
 			);
@@ -66,128 +66,127 @@ class Extend_Store_Endpoint {
 	 * @return array Schema structure.
 	 */
 	public static function extend_checkout_schema() {
-		return [
-			'billingHouseNumber' => [
+		return array(
+			'billingHouseNumber' => array(
 				'description' => 'Billing house number PostNL',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'shippingHouseNumber' => [
+			),
+			'shippingHouseNumber' => array(
 				'description' => 'Shipping house number PostNL',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'deliveryDay' => [
+			),
+			'deliveryDay' => array(
 				'description' => 'Selected delivery day for PostNL',
-
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'deliveryDayDate' => [
+			),
+			'deliveryDayDate' => array(
 				'description' => 'Selected delivery day date for PostNL',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'deliveryDayFrom' => [
+			),
+			'deliveryDayFrom' => array(
 				'description' => 'Delivery start time for PostNL delivery day',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'deliveryDayTo' => [
+			),
+			'deliveryDayTo' => array(
 				'description' => 'Delivery end time for PostNL delivery day',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'deliveryDayPrice' => [
+			),
+			'deliveryDayPrice' => array(
 				'description' => 'Price for the selected PostNL delivery time',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
-			],
-			'deliveryDayType' => [
+			),
+			'deliveryDayType' => array(
 				'description' => 'Type of delivery (Morning, Evening, etc.) for PostNL delivery day',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
+			),
 			// Updated hidden fields for the drop-off point
-			'dropoffPoints' => [
+			'dropoffPoints' => array(
 				'description' => 'Selected drop-off point identifier',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsAddressCompany' => [
+			),
+			'dropoffPointsAddressCompany' => array(
 				'description' => 'Company name of the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsAddress1' => [
+			),
+			'dropoffPointsAddress1' => array(
 				'description' => 'Address line 1 of the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsAddress2' => [
+			),
+			'dropoffPointsAddress2' => array(
 				'description' => 'Address line 2 of the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsCity' => [
+			),
+			'dropoffPointsCity' => array(
 				'description' => 'City of the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsPostcode' => [
+			),
+			'dropoffPointsPostcode' => array(
 				'description' => 'Postcode of the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsCountry' => [
+			),
+			'dropoffPointsCountry' => array(
 				'description' => 'Country of the drop-off point',
 				 // Use 'country' format if applicable
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsPartnerID' => [
+			),
+			'dropoffPointsPartnerID' => array(
 				'description' => 'Partner ID of the drop-off point',
 				  // Change to 'number' if it's numeric
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsDate' => [
+			),
+			'dropoffPointsDate' => array(
 				'description' => 'Date of the drop-off point selection',
 				 // Use 'date' format if applicable
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsTime' => [
+			),
+			'dropoffPointsTime' => array(
 				'description' => 'Time of the drop-off point selection',
 				 // Use 'time' format if applicable
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => ''
-			],
-			'dropoffPointsDistance' => [
+			),
+			'dropoffPointsDistance' => array(
 				'description' => 'Distance to the drop-off point',
-				'context'     => [ 'view', 'edit' ],
+				'context'     => array( 'view', 'edit' ),
 				'readonly'    => false,
 				'default'     => 0.0,
 				'nullable'    => true,
-			],
-		];
+			),
+		);
 	}
 
 }
